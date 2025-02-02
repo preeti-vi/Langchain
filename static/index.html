@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Input Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #response {
+            margin-top: 20px;
+        }
+        .response-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Enter your input</h1>
+    <form id="input-form">
+        <label for="user_input">Text:</label><br>
+        <input type="text" id="user_input" name="user_input" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        document.getElementById("input-form").addEventListener("submit", async function(e) {
+            e.preventDefault(); // Prevent form submission
+
+            const userInput = document.getElementById("user_input").value;
+            const responseElement = document.getElementById("response");
+
+            // Clear previous response
+            responseElement.innerHTML = "";
+
+            const formData = new FormData();
+            formData.append("user_input", userInput);
+
+            // Make a POST request to the server
+            const response = await fetch(`/submit?user_input=${encodeURIComponent(userInput)}`);
+
+            const data = await response.json();
+
+            // Display the response (list of strings)
+            data.response_list.forEach(item => {
+                const div = document.createElement("div");
+                div.classList.add("response-item");
+                div.textContent = item;
+                responseElement.appendChild(div);
+            });
+        });
+    </script>
+</body>
+</html>
